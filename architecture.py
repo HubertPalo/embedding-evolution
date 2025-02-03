@@ -5,7 +5,7 @@ class MyDIETBackbone(nn.Module):
     def __init__(self, encoding_size: int = 128):
         super().__init__()
         self.model = nn.Sequential(
-            nn.Conv1d(6, 32, kernel_size=8,
+            nn.Conv1d(9, 32, kernel_size=8,
                 stride=1, bias=False, padding=(8//2)),
             nn.BatchNorm1d(32),
             nn.ReLU(),

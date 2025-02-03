@@ -9,10 +9,11 @@ import torch
 
 class UCIDataModule(L.LightningDataModule):
     def __init__(self, return_index_as_label=False):
+        super().__init__()
         self._return_index_as_label = return_index_as_label
-        self.setup()
+        self.general_setup()
 
-    def setup(self):
+    def general_setup(self):
         # Check if the data folder exists
         if not os.path.exists('data'):
             # Check if the zip file exists
@@ -36,9 +37,20 @@ class UCIDataModule(L.LightningDataModule):
         train_total_acc_x = pd.read_csv('data/extracted/UCI HAR Dataset/train/Inertial Signals/total_acc_x_train.txt', header=None, sep='\s+')
         train_total_acc_y = pd.read_csv('data/extracted/UCI HAR Dataset/train/Inertial Signals/total_acc_y_train.txt', header=None, sep='\s+')
         train_total_acc_z = pd.read_csv('data/extracted/UCI HAR Dataset/train/Inertial Signals/total_acc_z_train.txt', header=None, sep='\s+')
+        train_acc_x = torch.tensor(train_acc_x.values, dtype=torch.float32)
+        train_acc_y = torch.tensor(train_acc_y.values, dtype=torch.float32)
+        train_acc_z = torch.tensor(train_acc_z.values, dtype=torch.float32)
+        train_gyro_x = torch.tensor(train_gyro_x.values, dtype=torch.float32)
+        train_gyro_y = torch.tensor(train_gyro_y.values, dtype=torch.float32)
+        train_gyro_z = torch.tensor(train_gyro_z.values, dtype=torch.float32)
+        train_total_acc_x = torch.tensor(train_total_acc_x.values, dtype=torch.float32)
+        train_total_acc_y = torch.tensor(train_total_acc_y.values, dtype=torch.float32)
+        train_total_acc_z = torch.tensor(train_total_acc_z.values, dtype=torch.float32)
+        self._train_x = torch.stack([train_acc_x, train_acc_y, train_acc_z, train_gyro_x, train_gyro_y, train_gyro_z, train_total_acc_x, train_total_acc_y, train_total_acc_z], dim=1)
 
-        self._train_x = pd.concat([train_acc_x, train_acc_y, train_acc_z, train_gyro_x, train_gyro_y, train_gyro_z, train_total_acc_x, train_total_acc_y, train_total_acc_z], axis=1)
-        self._train_x = torch.tensor(self._train_x.values, dtype=torch.float32)
+        # self._train_x = pd.concat([train_acc_x, train_acc_y, train_acc_z, train_gyro_x, train_gyro_y, train_gyro_z, train_total_acc_x, train_total_acc_y, train_total_acc_z], axis=0)
+        
+        # self._train_x = torch.tensor(self._train_x.values, dtype=torch.float32)
         if self._return_index_as_label:
             self._train_y = torch.arange(len(self._train_x))
         else:
@@ -54,9 +66,20 @@ class UCIDataModule(L.LightningDataModule):
         test_total_acc_x = pd.read_csv('data/extracted/UCI HAR Dataset/test/Inertial Signals/total_acc_x_test.txt', header=None, sep='\s+')
         test_total_acc_y = pd.read_csv('data/extracted/UCI HAR Dataset/test/Inertial Signals/total_acc_y_test.txt', header=None, sep='\s+')
         test_total_acc_z = pd.read_csv('data/extracted/UCI HAR Dataset/test/Inertial Signals/total_acc_z_test.txt', header=None, sep='\s+')
+        test_acc_x = torch.tensor(test_acc_x.values, dtype=torch.float32)
+        test_acc_y = torch.tensor(test_acc_y.values, dtype=torch.float32)
+        test_acc_z = torch.tensor(test_acc_z.values, dtype=torch.float32)
+        test_gyro_x = torch.tensor(test_gyro_x.values, dtype=torch.float32)
+        test_gyro_y = torch.tensor(test_gyro_y.values, dtype=torch.float32)
+        test_gyro_z = torch.tensor(test_gyro_z.values, dtype=torch.float32)
+        test_total_acc_x = torch.tensor(test_total_acc_x.values, dtype=torch.float32)
+        test_total_acc_y = torch.tensor(test_total_acc_y.values, dtype=torch.float32)
+        test_total_acc_z = torch.tensor(test_total_acc_z.values, dtype=torch.float32)
+        self._test_x = torch.stack([test_acc_x, test_acc_y, test_acc_z, test_gyro_x, test_gyro_y, test_gyro_z, test_total_acc_x, test_total_acc_y, test_total_acc_z], dim=1)
 
-        self._test_x = pd.concat([test_acc_x, test_acc_y, test_acc_z, test_gyro_x, test_gyro_y, test_gyro_z, test_total_acc_x, test_total_acc_y, test_total_acc_z], axis=1)
-        self._test_x = torch.tensor(self._test_x.values, dtype=torch.float32)
+
+        # self._test_x = pd.concat([test_acc_x, test_acc_y, test_acc_z, test_gyro_x, test_gyro_y, test_gyro_z, test_total_acc_x, test_total_acc_y, test_total_acc_z], axis=0)
+        # self._test_x = torch.tensor(self._test_x.values, dtype=torch.float32)
         
         self._test_y = pd.read_csv('data/extracted/UCI HAR Dataset/test/y_test.txt', header=None, sep='\s+') - 1
         self._test_y = torch.tensor(self._test_y.values, dtype=torch.long)
