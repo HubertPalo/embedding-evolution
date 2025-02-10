@@ -1,0 +1,24 @@
+name: Interrogate analysis and badge generation
+run-name: ${{ github.actor }} is checking the code for missing docstrings 📑
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  interrogate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10.6'
+
+      - name: Install dependencies
+        run: pip install interrogate[png]
+
+      - name: Run interrogate and generate badge
+        run: interrogate --generate-badge interrogate-badge.png --badge-format png
