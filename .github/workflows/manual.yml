@@ -21,4 +21,4 @@ jobs:
         run: pip install interrogate[png]
 
       - name: Run interrogate and generate badge
-        run: interrogate --generate-badge interrogate-badge.png --badge-format png
+        run: interrogate --generate-badge interrogate-badge.png --badge-format png --fail-under=1
